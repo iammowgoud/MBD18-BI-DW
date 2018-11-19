@@ -28,5 +28,5 @@ Temporary Items
 .apdisk
 
 # data
-group_proj/PDI/*.json
-group_proj/PDI/*.csv
+/group_proj/PDI/*.json
+/group_proj/PDI/*.csv
