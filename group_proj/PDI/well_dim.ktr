@@ -436,11 +436,15 @@
   </info>
   <notepads>
     <notepad>
-      <note>should we include state code and county code for wells in here?</note>
-      <xloc>137</xloc>
-      <yloc>72</yloc>
-      <width>397</width>
-      <heigth>26</heigth>
+      <note>should we include state code and county code for wells in here?
+
+Hatem:
+- I don't think so. The model has them only in their tables, State_D and County_D
+- Why do we have sort and unique rows ?</note>
+      <xloc>224</xloc>
+      <yloc>240</yloc>
+      <width>497</width>
+      <heigth>90</heigth>
       <fontname>.SF NS Text</fontname>
       <fontsize>13</fontsize>
       <fontbold>N</fontbold>
@@ -508,7 +512,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>560</xloc>
+      <xloc>624</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
@@ -691,6 +695,7 @@
       </field>
       <field>
         <name>well_name</name>
+        <rename />
       </field>
       <field>
         <name>status</name>
@@ -698,6 +703,7 @@
       </field>
       <field>
         <name>well_code</name>
+        <rename />
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -750,7 +756,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
@@ -779,7 +785,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
+      <xloc>528</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>

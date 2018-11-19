@@ -310,6 +310,30 @@
   <hops>
   </hops>
   <notepads>
+    <notepad>
+      <note>QUESTION:
+
+How are we going to connect (link FKs) Production Fact table
+to Wells dimension without having the well_id generated first ?</note>
+      <xloc>48</xloc>
+      <yloc>192</yloc>
+      <width>387</width>
+      <heigth>74</heigth>
+      <fontname>.SF NS Text</fontname>
+      <fontsize>13</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <attributes>
     <group>

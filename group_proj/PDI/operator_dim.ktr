@@ -438,11 +438,13 @@
     <notepad>
       <note>I kept the field 'parent' and 'cik', because I am not sure how do we link 
 the parent_dim and the operator_dim. Maybe we should discuss about
-it in the further meetings.</note>
-      <xloc>80</xloc>
-      <yloc>32</yloc>
-      <width>435</width>
-      <heigth>58</heigth>
+it in the further meetings.
+
+Hatem: There's something wrong in the first connection between CSV and Select Rows</note>
+      <xloc>192</xloc>
+      <yloc>240</yloc>
+      <width>536</width>
+      <heigth>90</heigth>
       <fontname>.SF NS Text</fontname>
       <fontsize>13</fontsize>
       <fontbold>N</fontbold>
@@ -461,11 +463,6 @@ it in the further meetings.</note>
   </notepads>
   <order>
     <hop>
-      <from>CSV file input</from>
-      <to>Select values</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Select values</from>
       <to>Sort rows</to>
       <enabled>Y</enabled>
@@ -473,6 +470,11 @@ it in the further meetings.</note>
     <hop>
       <from>Sort rows</from>
       <to>remove duplicated operators</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>CSV file input</from>
+      <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -650,15 +652,12 @@ it in the further meetings.</note>
     <fields>
       <field>
         <name>operator_name</name>
-        <rename />
       </field>
       <field>
         <name>parent</name>
-        <rename />
       </field>
       <field>
         <name>cik</name>
-        <rename />
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -670,7 +669,7 @@ it in the further meetings.</note>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
+      <xloc>384</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
@@ -711,7 +710,7 @@ it in the further meetings.</note>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>448</xloc>
+      <xloc>480</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
@@ -745,7 +744,7 @@ it in the further meetings.</note>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
+      <xloc>624</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
