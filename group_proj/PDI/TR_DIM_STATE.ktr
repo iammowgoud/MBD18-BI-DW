@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>geo_dim</name>
+    <name>well_dim</name>
     <description />
     <extended_description />
     <trans_version />
@@ -436,11 +436,15 @@
   </info>
   <notepads>
     <notepad>
-      <note>Hatem: Why do wehave State and County codes here ???</note>
-      <xloc>224</xloc>
-      <yloc>272</yloc>
-      <width>356</width>
-      <heigth>26</heigth>
+      <note>should we include state code and county code for wells in here?
+
+Hatem:
+- I don't think so. The model has them only in their tables, State_D and County_D
+- Why do we have sort and unique rows ?</note>
+      <xloc>176</xloc>
+      <yloc>288</yloc>
+      <width>497</width>
+      <heigth>90</heigth>
       <fontname>.SF NS Text</fontname>
       <fontsize>13</fontsize>
       <fontbold>N</fontbold>
@@ -457,12 +461,70 @@
       <drawshadow>Y</drawshadow>
     </notepad>
   </notepads>
+  <connection>
+    <name>localhost</name>
+    <server>localhost</server>
+    <type>GENERIC</type>
+    <access>Native</access>
+    <database>OIL_GAS_PRODUCTION</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
+    <attributes>
+      <attribute>
+        <code>CUSTOM_DRIVER_CLASS</code>
+        <attribute>com.mysql.cj.jdbc.Driver</attribute>
+      </attribute>
+      <attribute>
+        <code>CUSTOM_URL</code>
+        <attribute>jdbc:mysql://localhost:3306/</attribute>
+      </attribute>
+      <attribute>
+        <code>DATABASE_DIALECT_ID</code>
+        <attribute>Generic database</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
-    <hop>
-      <from>CSV file input</from>
-      <to>Select values</to>
-      <enabled>Y</enabled>
-    </hop>
     <hop>
       <from>Select values</from>
       <to>Sort rows</to>
@@ -470,12 +532,22 @@
     </hop>
     <hop>
       <from>Sort rows</from>
-      <to>remove duplicates</to>
+      <to>Unique rows</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>remove duplicates</from>
+      <from>CSV file input</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Unique rows</from>
       <to>Add index</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Add index</from>
+      <to>Insert / Update</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -490,9 +562,9 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <valuename>geo_id</valuename>
+    <valuename>well_id</valuename>
     <use_database>N</use_database>
-    <connection />
+    <connection>localhost</connection>
     <schema />
     <seqname>SEQ_</seqname>
     <use_counter>Y</use_counter>
@@ -509,7 +581,7 @@
     </remotesteps>
     <GUI>
       <xloc>608</xloc>
-      <yloc>128</yloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -524,7 +596,7 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <filename>${Internal.Entry.Current.Directory}/input/wells_clean.csv</filename>
+    <filename>${Internal.Entry.Current.Directory}/output/wells_clean.csv</filename>
     <filename_field />
     <rownum_field />
     <include_filename>N</include_filename>
@@ -556,7 +628,7 @@
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
-        <length>35</length>
+        <length>45</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
@@ -567,7 +639,7 @@
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
-        <length>32</length>
+        <length>45</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
@@ -628,35 +700,35 @@
       </field>
       <field>
         <name>state_code</name>
-        <type>Integer</type>
-        <format> #</format>
-        <currency>$</currency>
+        <type>String</type>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
+        <length>2</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>county_code</name>
-        <type>Integer</type>
-        <format> #</format>
-        <currency>$</currency>
+        <type>String</type>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
+        <length>3</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>well_code</name>
-        <type>Integer</type>
-        <format> #</format>
-        <currency>$</currency>
+        <type>String</type>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
+        <length>5</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
     </fields>
@@ -668,8 +740,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
-      <yloc>128</yloc>
+      <xloc>224</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -686,20 +758,20 @@
     </partitioning>
     <fields>
       <field>
-        <name>latitude</name>
-        <rename>geo_lat</rename>
+        <name>api_number</name>
+        <rename>well_api_no</rename>
       </field>
       <field>
-        <name>longitude</name>
-        <rename>geo_long</rename>
+        <name>well_name</name>
+        <rename />
       </field>
       <field>
-        <name>state_code</name>
-        <rename>geo_state_code</rename>
+        <name>status</name>
+        <rename>well_status</rename>
       </field>
       <field>
-        <name>county_code</name>
-        <rename>geo_county_code</rename>
+        <name>well_code</name>
+        <rename />
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -711,8 +783,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
-      <yloc>128</yloc>
+      <xloc>320</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -736,15 +808,7 @@
     <unique_rows>N</unique_rows>
     <fields>
       <field>
-        <name>geo_lat</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-      <field>
-        <name>geo_long</name>
+        <name>well_api_no</name>
         <ascending>Y</ascending>
         <case_sensitive>N</case_sensitive>
         <collator_enabled>N</collator_enabled>
@@ -761,12 +825,12 @@
     </remotesteps>
     <GUI>
       <xloc>416</xloc>
-      <yloc>128</yloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>remove duplicates</name>
+    <name>Unique rows</name>
     <type>Unique</type>
     <description />
     <distribute>Y</distribute>
@@ -790,7 +854,69 @@
     </remotesteps>
     <GUI>
       <xloc>512</xloc>
-      <yloc>128</yloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Insert / Update</name>
+    <type>InsertUpdate</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema>OIL_PRODUCTION</schema>
+      <table>Well_D</table>
+      <key>
+        <name>well_api_no</name>
+        <field>well_api_no</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <value>
+        <name>well_id</name>
+        <rename>well_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_api_no</name>
+        <rename>well_api_no</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_name</name>
+        <rename>well_name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_status</name>
+        <rename>well_status</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_code</name>
+        <rename>well_code</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>704</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
