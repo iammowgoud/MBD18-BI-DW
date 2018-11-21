@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>state_dim</name>
+    <name>parent_Dim</name>
     <description />
     <extended_description />
     <trans_version />
@@ -517,7 +517,17 @@
     </hop>
     <hop>
       <from>Unique rows</from>
+      <to>Filter rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
       <to>Insert / Update</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
+      <to>Dummy (do nothing)</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -625,8 +635,8 @@
       </field>
       <field>
         <name>cik</name>
-        <type>Number</type>
-        <format>#.#</format>
+        <type>Integer</type>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
@@ -697,16 +707,27 @@
     <update_bypassed>N</update_bypassed>
     <lookup>
       <schema>OIL_PRODUCTION</schema>
-      <table>State_D</table>
+      <table>Parent_D</table>
       <key>
-        <name>state_code</name>
-        <field>state_code</field>
+        <name>parent_name</name>
+        <field>parent_name</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>parent_cik</name>
+        <field>parent_cik</field>
         <condition>=</condition>
         <name2 />
       </key>
       <value>
-        <name>state_code</name>
-        <rename>state_code</rename>
+        <name>parent_name</name>
+        <rename>parent_name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>parent_cik</name>
+        <rename>parent_cik</rename>
         <update>Y</update>
       </value>
     </lookup>
@@ -718,7 +739,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
+      <xloc>816</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -736,7 +757,12 @@
     </partitioning>
     <fields>
       <field>
-        <name>state_code</name>
+        <name>parent</name>
+        <rename>parent_name</rename>
+      </field>
+      <field>
+        <name>cik</name>
+        <rename>parent_cik</rename>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -773,7 +799,15 @@
     <unique_rows>N</unique_rows>
     <fields>
       <field>
-        <name>state_code</name>
+        <name>parent_name</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+      <field>
+        <name>parent_cik</name>
         <ascending>Y</ascending>
         <case_sensitive>N</case_sensitive>
         <collator_enabled>N</collator_enabled>
@@ -811,7 +845,11 @@
     <error_description />
     <fields>
       <field>
-        <name>state_code</name>
+        <name>parent_name</name>
+        <case_insensitive>N</case_insensitive>
+      </field>
+      <field>
+        <name>parent_cik</name>
         <case_insensitive>N</case_insensitive>
       </field>
     </fields>
@@ -825,6 +863,73 @@
     <GUI>
       <xloc>544</xloc>
       <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Filter rows</name>
+    <type>FilterRows</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <send_true_to>Dummy (do nothing)</send_true_to>
+    <send_false_to>Insert / Update</send_false_to>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <leftvalue>parent_cik</leftvalue>
+        <function>=</function>
+        <rightvalue />
+        <value>
+          <name>constant</name>
+          <type>Number</type>
+          <text>0.0</text>
+          <length>-1</length>
+          <precision>-1</precision>
+          <isnull>N</isnull>
+          <mask>####0.0#########;-####0.0#########</mask>
+        </value>
+      </condition>
+    </compare>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

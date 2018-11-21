@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>state_dim</name>
+    <name>operator_dim</name>
     <description />
     <extended_description />
     <trans_version />
@@ -697,16 +697,16 @@
     <update_bypassed>N</update_bypassed>
     <lookup>
       <schema>OIL_PRODUCTION</schema>
-      <table>State_D</table>
+      <table>Operator_D</table>
       <key>
-        <name>state_code</name>
-        <field>state_code</field>
+        <name>operator_name</name>
+        <field>operator_name</field>
         <condition>=</condition>
         <name2 />
       </key>
       <value>
-        <name>state_code</name>
-        <rename>state_code</rename>
+        <name>operator_name</name>
+        <rename>operator_name</rename>
         <update>Y</update>
       </value>
     </lookup>
@@ -736,7 +736,8 @@
     </partitioning>
     <fields>
       <field>
-        <name>state_code</name>
+        <name>operator_name</name>
+        <rename />
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -773,7 +774,7 @@
     <unique_rows>N</unique_rows>
     <fields>
       <field>
-        <name>state_code</name>
+        <name>operator_name</name>
         <ascending>Y</ascending>
         <case_sensitive>N</case_sensitive>
         <collator_enabled>N</collator_enabled>
@@ -811,7 +812,7 @@
     <error_description />
     <fields>
       <field>
-        <name>state_code</name>
+        <name>operator_name</name>
         <case_insensitive>N</case_insensitive>
       </field>
     </fields>

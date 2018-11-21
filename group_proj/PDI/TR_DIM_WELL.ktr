@@ -435,31 +435,6 @@
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
-    <notepad>
-      <note>should we include state code and county code for wells in here?
-
-Hatem:
-- I don't think so. The model has them only in their tables, State_D and County_D
-- Why do we have sort and unique rows ?</note>
-      <xloc>176</xloc>
-      <yloc>288</yloc>
-      <width>497</width>
-      <heigth>90</heigth>
-      <fontname>.SF NS Text</fontname>
-      <fontsize>13</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>localhost</name>
@@ -542,49 +517,10 @@ Hatem:
     </hop>
     <hop>
       <from>Unique rows</from>
-      <to>Add index</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Add index</from>
       <to>Insert / Update</to>
       <enabled>Y</enabled>
     </hop>
   </order>
-  <step>
-    <name>Add index</name>
-    <type>Sequence</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <valuename>well_id</valuename>
-    <use_database>N</use_database>
-    <connection>localhost</connection>
-    <schema />
-    <seqname>SEQ_</seqname>
-    <use_counter>Y</use_counter>
-    <counter_name />
-    <start_at>1</start_at>
-    <increment_by>1</increment_by>
-    <max_value>999999999</max_value>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>608</xloc>
-      <yloc>112</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
   <step>
     <name>CSV file input</name>
     <type>CsvInput</type>
@@ -746,6 +682,63 @@ Hatem:
     </GUI>
   </step>
   <step>
+    <name>Insert / Update</name>
+    <type>InsertUpdate</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema>OIL_PRODUCTION</schema>
+      <table>Well_D</table>
+      <key>
+        <name>well_api_no</name>
+        <field>well_api_no</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <value>
+        <name>well_api_no</name>
+        <rename>well_api_no</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_name</name>
+        <rename>well_name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_status</name>
+        <rename>well_status</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_code</name>
+        <rename>well_code</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Select values</name>
     <type>SelectValues</type>
     <description />
@@ -763,7 +756,6 @@ Hatem:
       </field>
       <field>
         <name>well_name</name>
-        <rename />
       </field>
       <field>
         <name>status</name>
@@ -771,7 +763,6 @@ Hatem:
       </field>
       <field>
         <name>well_code</name>
-        <rename />
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -783,7 +774,7 @@ Hatem:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
+      <xloc>336</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -824,7 +815,7 @@ Hatem:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
+      <xloc>448</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -853,69 +844,7 @@ Hatem:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>512</xloc>
-      <yloc>112</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Insert / Update</name>
-    <type>InsertUpdate</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <connection>localhost</connection>
-    <commit>100</commit>
-    <update_bypassed>N</update_bypassed>
-    <lookup>
-      <schema>OIL_PRODUCTION</schema>
-      <table>Well_D</table>
-      <key>
-        <name>well_api_no</name>
-        <field>well_api_no</field>
-        <condition>=</condition>
-        <name2 />
-      </key>
-      <value>
-        <name>well_id</name>
-        <rename>well_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>well_api_no</name>
-        <rename>well_api_no</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>well_name</name>
-        <rename>well_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>well_status</name>
-        <rename>well_status</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>well_code</name>
-        <rename>well_code</rename>
-        <update>Y</update>
-      </value>
-    </lookup>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>704</xloc>
+      <xloc>544</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
