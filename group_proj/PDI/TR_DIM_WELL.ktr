@@ -517,7 +517,17 @@
     </hop>
     <hop>
       <from>Unique rows</from>
+      <to>Filter rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
       <to>Insert / Update</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
+      <to>Dummy (do nothing)</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -532,7 +542,7 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <filename>${Internal.Entry.Current.Directory}/output/wells_clean.csv</filename>
+    <filename>${Internal.Entry.Current.Directory}/output/merged_production.csv</filename>
     <filename_field />
     <rownum_field />
     <include_filename>N</include_filename>
@@ -549,11 +559,11 @@
       <field>
         <name>api_number</name>
         <type>Integer</type>
-        <format>#</format>
-        <currency>$</currency>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>15</length>
+        <length>-1</length>
         <precision>0</precision>
         <trim_type>none</trim_type>
       </field>
@@ -561,10 +571,10 @@
         <name>operator_name</name>
         <type>String</type>
         <format />
-        <currency>$</currency>
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>45</length>
+        <length>50</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
@@ -572,40 +582,40 @@
         <name>well_name</name>
         <type>String</type>
         <format />
-        <currency>$</currency>
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>45</length>
+        <length>50</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>latitude</name>
         <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>13</length>
-        <precision>10</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>longitude</name>
         <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>14</length>
-        <precision>9</precision>
+        <length>-1</length>
+        <precision>10</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>status</name>
         <type>String</type>
         <format />
-        <currency>$</currency>
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
         <length>1</length>
@@ -616,22 +626,22 @@
         <name>parent</name>
         <type>String</type>
         <format />
-        <currency>$</currency>
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>25</length>
+        <length>50</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>cik</name>
-        <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
+        <type>Integer</type>
+        <format />
+        <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>9</length>
-        <precision>1</precision>
+        <length>-1</length>
+        <precision>0</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -641,8 +651,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>2</length>
-        <precision>-1</precision>
+        <length>15</length>
+        <precision>0</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -652,8 +662,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>3</length>
-        <precision>-1</precision>
+        <length>15</length>
+        <precision>0</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -663,7 +673,84 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>5</length>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>month</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>oil</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>gas</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>water</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>p_year</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>p_month</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>p_day</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
@@ -677,6 +764,73 @@
     </remotesteps>
     <GUI>
       <xloc>224</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Filter rows</name>
+    <type>FilterRows</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <send_true_to>Insert / Update</send_true_to>
+    <send_false_to>Dummy (do nothing)</send_false_to>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <leftvalue>well_api_no</leftvalue>
+        <function>IS NOT NULL</function>
+        <rightvalue />
+        <value>
+          <name>constant</name>
+          <type>Integer</type>
+          <text />
+          <length>-1</length>
+          <precision>0</precision>
+          <isnull>Y</isnull>
+          <mask>####0;-####0</mask>
+        </value>
+      </condition>
+    </compare>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>656</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -733,7 +887,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
+      <xloc>816</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -835,7 +989,12 @@
     <count_field />
     <reject_duplicate_row>N</reject_duplicate_row>
     <error_description />
-    <fields>      </fields>
+    <fields>
+      <field>
+        <name>well_api_no</name>
+        <case_insensitive>N</case_insensitive>
+      </field>
+    </fields>
     <cluster_schema />
     <remotesteps>
       <input>
