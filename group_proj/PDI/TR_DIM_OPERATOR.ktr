@@ -518,7 +518,7 @@
     <hop>
       <from>Combination lookup/update</from>
       <to>Select values</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>CSV file input</from>
@@ -768,7 +768,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>64</xloc>
+      <xloc>32</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>

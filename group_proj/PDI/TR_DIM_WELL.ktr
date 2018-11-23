@@ -511,23 +511,28 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>CSV file input</from>
+      <from>Filter rows</from>
+      <to>Dummy (do nothing)</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Combination lookup/update</from>
       <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Unique rows</from>
+      <from>CSV file input</from>
       <to>Filter rows</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Filter rows</from>
-      <to>Insert / Update</to>
+      <to>Combination lookup/update</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>Dummy (do nothing)</to>
+      <from>Unique rows</from>
+      <to>Insert / Update</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -763,7 +768,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
+      <xloc>32</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -787,7 +792,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
+      <xloc>128</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -803,23 +808,35 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <send_true_to>Insert / Update</send_true_to>
+    <send_true_to>Combination lookup/update</send_true_to>
     <send_false_to>Dummy (do nothing)</send_false_to>
     <compare>
       <condition>
         <negated>N</negated>
-        <leftvalue>well_api_no</leftvalue>
-        <function>IS NOT NULL</function>
-        <rightvalue />
-        <value>
-          <name>constant</name>
-          <type>Integer</type>
-          <text />
-          <length>-1</length>
-          <precision>0</precision>
-          <isnull>Y</isnull>
-          <mask>####0;-####0</mask>
-        </value>
+        <conditions>
+          <condition>
+            <negated>N</negated>
+            <leftvalue>api_number</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+            <value>
+              <name>constant</name>
+              <type>Integer</type>
+              <text />
+              <length>-1</length>
+              <precision>0</precision>
+              <isnull>Y</isnull>
+              <mask>####0;-####0</mask>
+            </value>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>operator_name</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+          </condition>
+        </conditions>
       </condition>
     </compare>
     <cluster_schema />
@@ -830,7 +847,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
+      <xloc>128</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -858,6 +875,12 @@
         <condition>=</condition>
         <name2 />
       </key>
+      <key>
+        <name>operator_id</name>
+        <field>operator_id</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
       <value>
         <name>well_api_no</name>
         <rename>well_api_no</rename>
@@ -878,6 +901,11 @@
         <rename>well_code</rename>
         <update>Y</update>
       </value>
+      <value>
+        <name>operator_id</name>
+        <rename>operator_id</rename>
+        <update>Y</update>
+      </value>
     </lookup>
     <cluster_schema />
     <remotesteps>
@@ -887,7 +915,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>816</xloc>
+      <xloc>640</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -910,6 +938,7 @@
       </field>
       <field>
         <name>well_name</name>
+        <rename />
       </field>
       <field>
         <name>status</name>
@@ -917,6 +946,11 @@
       </field>
       <field>
         <name>well_code</name>
+        <rename />
+      </field>
+      <field>
+        <name>operator_id</name>
+        <rename />
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -1004,6 +1038,52 @@
     </remotesteps>
     <GUI>
       <xloc>544</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Combination lookup/update</name>
+    <type>CombinationLookup</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <schema>OIL_PRODUCTION</schema>
+    <table>Operator_D</table>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <cache_size>9999</cache_size>
+    <replace>Y</replace>
+    <preloadCache>N</preloadCache>
+    <crc>N</crc>
+    <crcfield>hashcode</crcfield>
+    <fields>
+      <key>
+        <name>operator_name</name>
+        <lookup>operator_name</lookup>
+      </key>
+      <return>
+        <name>operator_id</name>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+      </return>
+    </fields>
+    <sequence />
+    <last_update_field />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>224</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>

@@ -441,8 +441,8 @@
 - First, it looks up for the foreign keys.
 - Then completes values.
 - Finally it inserts/updates the data in the fact table.</note>
-      <xloc>48</xloc>
-      <yloc>32</yloc>
+      <xloc>144</xloc>
+      <yloc>48</yloc>
       <width>324</width>
       <heigth>90</heigth>
       <fontname>.SF NS Text</fontname>
@@ -526,142 +526,53 @@
   </connection>
   <order>
     <hop>
-      <from>Lookup Geo_D</from>
-      <to>Lookup Date_D</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Wells CSV file input</from>
-      <to>Lookup Geo_D</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Production CSV file input</from>
-      <to>Wells CSV file input</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Lookup Date_D</from>
-      <to>Lookup State_D</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Lookup State_D</from>
       <to>Lookup County_D</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Lookup County_D</from>
+      <from>Select values</from>
+      <to>Insert / Update</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
+      <to>Dummy (do nothing)</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>CSV file input</from>
       <to>Lookup Well_D</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
+      <to>Lookup Date_D</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Lookup County_D</from>
+      <to>Lookup Geo_D</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Lookup Date_D</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Lookup Geo_D</from>
+      <to>Filter rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Lookup Well_D</from>
+      <to>Lookup State_D</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Lookup Date_D</name>
-    <type>CombinationLookup</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <schema />
-    <table>date_d</table>
-    <connection>localhost</connection>
-    <commit>100</commit>
-    <cache_size>9999</cache_size>
-    <replace>Y</replace>
-    <preloadCache>N</preloadCache>
-    <crc>N</crc>
-    <crcfield>hashcode</crcfield>
-    <fields>
-      <key>
-        <name>date_year</name>
-        <lookup>date_year</lookup>
-      </key>
-      <key>
-        <name>date_month</name>
-        <lookup>date_month</lookup>
-      </key>
-      <key>
-        <name>date_day</name>
-        <lookup>date_day</lookup>
-      </key>
-      <return>
-        <name>date_id</name>
-        <creation_method>tablemax</creation_method>
-        <use_autoinc>N</use_autoinc>
-      </return>
-    </fields>
-    <sequence />
-    <last_update_field />
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>480</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup Geo_D</name>
-    <type>CombinationLookup</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <schema>OIL_PRODUCTION</schema>
-    <table>geo_d</table>
-    <connection>localhost</connection>
-    <commit>100</commit>
-    <cache_size>9999</cache_size>
-    <replace>Y</replace>
-    <preloadCache>N</preloadCache>
-    <crc>N</crc>
-    <crcfield>hashcode</crcfield>
-    <fields>
-      <key>
-        <name>geo_lat</name>
-        <lookup>geo_lat</lookup>
-      </key>
-      <key>
-        <name>geo_long</name>
-        <lookup>geo_long</lookup>
-      </key>
-      <return>
-        <name>geo_id</name>
-        <creation_method>tablemax</creation_method>
-        <use_autoinc>N</use_autoinc>
-      </return>
-    </fields>
-    <sequence />
-    <last_update_field />
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>352</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Production CSV file input</name>
+    <name>CSV file input</name>
     <type>CsvInput</type>
     <description />
     <distribute>Y</distribute>
@@ -671,7 +582,7 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <filename>${Internal.Entry.Current.Directory}/output/production_clean.csv</filename>
+    <filename>${Internal.Entry.Current.Directory}/output/merged_production.csv</filename>
     <filename_field />
     <rownum_field />
     <include_filename>N</include_filename>
@@ -692,8 +603,129 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
+        <length>-1</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>operator_name</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>50</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>well_name</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>50</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>latitude</name>
+        <type>Number</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>longitude</name>
+        <type>Number</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>10</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>status</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>parent</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>50</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>cik</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>state_code</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
         <length>15</length>
         <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>county_code</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>well_code</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>month</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -703,8 +735,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>10</length>
-        <precision>0</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -714,8 +746,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>10</length>
-        <precision>0</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -725,8 +757,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>10</length>
-        <precision>0</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -736,8 +768,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>4</length>
-        <precision>0</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -747,8 +779,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>2</length>
-        <precision>0</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -758,8 +790,8 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>2</length>
-        <precision>0</precision>
+        <length>-1</length>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
     </fields>
@@ -777,8 +809,8 @@
     </GUI>
   </step>
   <step>
-    <name>Wells CSV file input</name>
-    <type>CsvInput</type>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -787,142 +819,6 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <filename>${Internal.Entry.Current.Directory}/output/wells_clean.csv</filename>
-    <filename_field>${Internal.Entry.Current.Directory}/output/wells_clean.csv</filename_field>
-    <rownum_field />
-    <include_filename>N</include_filename>
-    <separator>;</separator>
-    <enclosure>"</enclosure>
-    <header>Y</header>
-    <buffer_size>50000</buffer_size>
-    <lazy_conversion>Y</lazy_conversion>
-    <add_filename_result>N</add_filename_result>
-    <parallel>N</parallel>
-    <newline_possible>N</newline_possible>
-    <encoding />
-    <fields>
-      <field>
-        <name>api_number</name>
-        <type>Integer</type>
-        <format>#</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>operator_name</name>
-        <type>String</type>
-        <format />
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>45</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>well_name</name>
-        <type>String</type>
-        <format />
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>45</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>latitude</name>
-        <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>13</length>
-        <precision>10</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>longitude</name>
-        <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>14</length>
-        <precision>9</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>status</name>
-        <type>String</type>
-        <format />
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>parent</name>
-        <type>String</type>
-        <format />
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>25</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>cik</name>
-        <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>9</length>
-        <precision>1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>state_code</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>county_code</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>3</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>well_code</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>5</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
     <cluster_schema />
     <remotesteps>
       <input>
@@ -931,14 +827,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
-      <yloc>208</yloc>
+      <xloc>80</xloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Lookup Well_D</name>
-    <type>CombinationLookup</type>
+    <name>Filter rows</name>
+    <type>FilterRows</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -947,40 +843,53 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <schema>OIL_PRODUCTION</schema>
-    <table>well_d</table>
-    <connection>localhost</connection>
-    <commit>100</commit>
-    <cache_size>9999</cache_size>
-    <replace>Y</replace>
-    <preloadCache>N</preloadCache>
-    <crc>N</crc>
-    <crcfield>hashcode</crcfield>
-    <fields>
-      <key>
-        <name>api_number</name>
-        <lookup>well_api_no</lookup>
-      </key>
-      <key>
-        <name>well_name</name>
-        <lookup>well_name</lookup>
-      </key>
-      <key>
-        <name>well_status</name>
-        <lookup>well_status</lookup>
-      </key>
-      <key>
-        <name>well_code</name>
-        <lookup>well_code</lookup>
-      </key>
-      <return>
-        <name>well_id</name>
-        <creation_method>tablemax</creation_method>
-        <use_autoinc>N</use_autoinc>
-      </return>
-    </fields>
-    <sequence />
-    <last_update_field />
+    <send_true_to>Lookup Date_D</send_true_to>
+    <send_false_to>Dummy (do nothing)</send_false_to>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <conditions>
+          <condition>
+            <negated>N</negated>
+            <leftvalue>p_year</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+            <value>
+              <name>constant</name>
+              <type>Number</type>
+              <text>0.0</text>
+              <length>-1</length>
+              <precision>-1</precision>
+              <isnull>N</isnull>
+              <mask>####0.0#########;-####0.0#########</mask>
+            </value>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>p_month</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>p_day</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+            <value>
+              <name>constant</name>
+              <type>Integer</type>
+              <text>0</text>
+              <length>-1</length>
+              <precision>0</precision>
+              <isnull>N</isnull>
+              <mask>####0;-####0</mask>
+            </value>
+          </condition>
+        </conditions>
+      </condition>
+    </compare>
     <cluster_schema />
     <remotesteps>
       <input>
@@ -989,8 +898,127 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>736</xloc>
-      <yloc>352</yloc>
+      <xloc>80</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Insert / Update</name>
+    <type>InsertUpdate</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema>OIL_PRODUCTION</schema>
+      <table>Production_F</table>
+      <key>
+        <name>production_oil</name>
+        <field>production_oil</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>production_gas</name>
+        <field>production_gas</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>production_water</name>
+        <field>production_water</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>geo_id</name>
+        <field>geo_id</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>date_id</name>
+        <field>date_id</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>state_id</name>
+        <field>state_id</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>county_id</name>
+        <field>county_id</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <key>
+        <name>well_id</name>
+        <field>well_id</field>
+        <condition>=</condition>
+        <name2 />
+      </key>
+      <value>
+        <name>production_oil</name>
+        <rename>production_oil</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>production_gas</name>
+        <rename>production_gas</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>production_water</name>
+        <rename>production_water</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>geo_id</name>
+        <rename>geo_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>date_id</name>
+        <rename>date_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>state_id</name>
+        <rename>state_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>county_id</name>
+        <rename>county_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>well_id</name>
+        <rename>well_id</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>496</xloc>
+      <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1035,7 +1063,111 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>736</xloc>
+      <xloc>448</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Date_D</name>
+    <type>CombinationLookup</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <schema>OIL_PRODUCTION</schema>
+    <table>Date_D</table>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <cache_size>9999</cache_size>
+    <replace>Y</replace>
+    <preloadCache>N</preloadCache>
+    <crc>N</crc>
+    <crcfield>hashcode</crcfield>
+    <fields>
+      <key>
+        <name>p_year</name>
+        <lookup>date_year</lookup>
+      </key>
+      <key>
+        <name>p_month</name>
+        <lookup>date_month</lookup>
+      </key>
+      <key>
+        <name>p_day</name>
+        <lookup>date_day</lookup>
+      </key>
+      <return>
+        <name>date_id</name>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+      </return>
+    </fields>
+    <sequence />
+    <last_update_field />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>256</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Geo_D</name>
+    <type>CombinationLookup</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <schema>OIL_PRODUCTION</schema>
+    <table>geo_d</table>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <cache_size>9999</cache_size>
+    <replace>Y</replace>
+    <preloadCache>N</preloadCache>
+    <crc>N</crc>
+    <crcfield>hashcode</crcfield>
+    <fields>
+      <key>
+        <name>latitude</name>
+        <lookup>geo_lat</lookup>
+      </key>
+      <key>
+        <name>longitude</name>
+        <lookup>geo_long</lookup>
+      </key>
+      <return>
+        <name>geo_id</name>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+      </return>
+    </fields>
+    <sequence />
+    <last_update_field />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>576</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1081,8 +1213,120 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>592</xloc>
+      <xloc>288</xloc>
       <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Well_D</name>
+    <type>CombinationLookup</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <schema>OIL_PRODUCTION</schema>
+    <table>well_d</table>
+    <connection>localhost</connection>
+    <commit>100</commit>
+    <cache_size>9999</cache_size>
+    <replace>Y</replace>
+    <preloadCache>N</preloadCache>
+    <crc>N</crc>
+    <crcfield>hashcode</crcfield>
+    <fields>
+      <key>
+        <name>api_number</name>
+        <lookup>well_api_no</lookup>
+      </key>
+      <key>
+        <name>well_name</name>
+        <lookup>well_name</lookup>
+      </key>
+      <key>
+        <name>status</name>
+        <lookup>well_status</lookup>
+      </key>
+      <key>
+        <name>well_code</name>
+        <lookup>well_code</lookup>
+      </key>
+      <return>
+        <name>well_id</name>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+      </return>
+    </fields>
+    <sequence />
+    <last_update_field />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>176</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <field>
+        <name>oil</name>
+        <rename>production_oil</rename>
+      </field>
+      <field>
+        <name>gas</name>
+        <rename>production_gas</rename>
+      </field>
+      <field>
+        <name>water</name>
+        <rename>production_water</rename>
+      </field>
+      <field>
+        <name>geo_id</name>
+      </field>
+      <field>
+        <name>date_id</name>
+      </field>
+      <field>
+        <name>state_id</name>
+      </field>
+      <field>
+        <name>county_id</name>
+      </field>
+      <field>
+        <name>well_id</name>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
