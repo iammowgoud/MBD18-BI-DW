@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>parent_Dim</name>
+    <name>geo_dim</name>
     <description />
     <extended_description />
     <trans_version />
@@ -435,6 +435,36 @@
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
+    <notepad>
+      <note>Geo Dimension
+
+1. input 'merged_production.csv'
+2. filter the rows where latitude and longitude are neither null nor zero
+3. select 'latitude' and 'longitude' from the input dataset 
+	and rename to 'geo_lat' and 'geo_long'
+4. sort by first 'geo_lat' and then 'geo_long' in ascending order
+5. remove duplicates for each pair of 'geo_lat' and 'geo_long'
+6. insert 'geo_lat' and 'geo_long' into the dimension table 'Geo_D' 
+	of the schema 'MEXICO_PRODUCTION' </note>
+      <xloc>96</xloc>
+      <yloc>32</yloc>
+      <width>433</width>
+      <heigth>170</heigth>
+      <fontname>.SF NS Text</fontname>
+      <fontsize>13</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <connection>
     <name>localhost</name>
@@ -511,23 +541,23 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Unique rows</from>
-      <to>Filter rows</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>CSV file input</from>
-      <to>Select values</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Filter rows</from>
+      <to>Dummy (do nothing)</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Unique rows</from>
       <to>Insert / Update</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Filter rows</from>
-      <to>Dummy (do nothing)</to>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merged CSV File Input</from>
+      <to>Filter rows</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -550,8 +580,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
-      <yloc>240</yloc>
+      <xloc>208</xloc>
+      <yloc>368</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -566,7 +596,7 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <send_true_to>Insert / Update</send_true_to>
+    <send_true_to>Select values</send_true_to>
     <send_false_to>Dummy (do nothing)</send_false_to>
     <compare>
       <condition>
@@ -574,7 +604,22 @@
         <conditions>
           <condition>
             <negated>N</negated>
-            <leftvalue>parent_cik</leftvalue>
+            <operator>AND</operator>
+            <leftvalue>latitude</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>longitude</leftvalue>
+            <function>IS NOT NULL</function>
+            <rightvalue />
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>latitude</leftvalue>
             <function>&lt;></function>
             <rightvalue />
             <value>
@@ -590,9 +635,18 @@
           <condition>
             <negated>N</negated>
             <operator>AND</operator>
-            <leftvalue>parent_name</leftvalue>
-            <function>IS NOT NULL</function>
+            <leftvalue>longitude</leftvalue>
+            <function>&lt;></function>
             <rightvalue />
+            <value>
+              <name>constant</name>
+              <type>Number</type>
+              <text>0.0</text>
+              <length>-1</length>
+              <precision>-1</precision>
+              <isnull>N</isnull>
+              <mask>####0.0#########;-####0.0#########</mask>
+            </value>
           </condition>
         </conditions>
       </condition>
@@ -605,8 +659,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
-      <yloc>112</yloc>
+      <xloc>208</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -625,28 +679,28 @@
     <commit>100</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>OIL_PRODUCTION</schema>
-      <table>Parent_D</table>
+      <schema>MEXICO_PRODUCTION</schema>
+      <table>Geo_D</table>
       <key>
-        <name>parent_name</name>
-        <field>parent_name</field>
+        <name>geo_lat</name>
+        <field>geo_lat</field>
         <condition>=</condition>
         <name2 />
       </key>
       <key>
-        <name>parent_cik</name>
-        <field>parent_cik</field>
+        <name>geo_long</name>
+        <field>geo_long</field>
         <condition>=</condition>
         <name2 />
       </key>
       <value>
-        <name>parent_name</name>
-        <rename>parent_name</rename>
+        <name>geo_lat</name>
+        <rename>geo_lat</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>parent_cik</name>
-        <rename>parent_cik</rename>
+        <name>geo_long</name>
+        <rename>geo_long</rename>
         <update>Y</update>
       </value>
     </lookup>
@@ -658,135 +712,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>816</xloc>
-      <yloc>112</yloc>
+      <xloc>672</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Select values</name>
-    <type>SelectValues</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <fields>
-      <field>
-        <name>parent</name>
-        <rename>parent_name</rename>
-      </field>
-      <field>
-        <name>cik</name>
-        <rename>parent_cik</rename>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>336</xloc>
-      <yloc>112</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Sort rows</name>
-    <type>SortRows</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>out</prefix>
-    <sort_size>1000000</sort_size>
-    <free_memory />
-    <compress>N</compress>
-    <compress_variable />
-    <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>parent_name</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-      <field>
-        <name>parent_cik</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>448</xloc>
-      <yloc>112</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Unique rows</name>
-    <type>Unique</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <count_rows>N</count_rows>
-    <count_field />
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description />
-    <fields>
-      <field>
-        <name>parent_name</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-      <field>
-        <name>parent_cik</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>544</xloc>
-      <yloc>112</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>CSV file input</name>
+    <name>Merged CSV File Input</name>
     <type>CsvInput</type>
     <description />
     <distribute>Y</distribute>
@@ -811,14 +743,14 @@
     <encoding />
     <fields>
       <field>
-        <name>api_number</name>
+        <name>api_no</name>
         <type>Integer</type>
-        <format />
+        <format>#</format>
         <currency />
         <decimal>.</decimal>
         <group>,</group>
         <length>-1</length>
-        <precision>0</precision>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -828,7 +760,7 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>50</length>
+        <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
@@ -839,14 +771,14 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>50</length>
+        <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>latitude</name>
         <type>Number</type>
-        <format />
+        <format>#.#</format>
         <currency />
         <decimal>.</decimal>
         <group>,</group>
@@ -857,12 +789,12 @@
       <field>
         <name>longitude</name>
         <type>Number</type>
-        <format />
+        <format>#.#</format>
         <currency />
         <decimal>.</decimal>
         <group>,</group>
         <length>-1</length>
-        <precision>10</precision>
+        <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
@@ -872,7 +804,7 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>1</length>
+        <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
@@ -883,58 +815,14 @@
         <currency />
         <decimal>.</decimal>
         <group>,</group>
-        <length>50</length>
+        <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
       <field>
         <name>cik</name>
-        <type>Integer</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>0</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>state_code</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>county_code</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>well_code</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>15</length>
-        <precision>0</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>month</name>
-        <type>Integer</type>
-        <format />
+        <type>Number</type>
+        <format>#.#</format>
         <currency />
         <decimal>.</decimal>
         <group>,</group>
@@ -944,7 +832,7 @@
       </field>
       <field>
         <name>oil</name>
-        <type>Integer</type>
+        <type>Boolean</type>
         <format />
         <currency />
         <decimal>.</decimal>
@@ -955,18 +843,7 @@
       </field>
       <field>
         <name>gas</name>
-        <type>Integer</type>
-        <format />
-        <currency />
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>water</name>
-        <type>Integer</type>
+        <type>Boolean</type>
         <format />
         <currency />
         <decimal>.</decimal>
@@ -977,7 +854,7 @@
       </field>
       <field>
         <name>p_year</name>
-        <type>Integer</type>
+        <type>Boolean</type>
         <format />
         <currency />
         <decimal>.</decimal>
@@ -988,7 +865,7 @@
       </field>
       <field>
         <name>p_month</name>
-        <type>Integer</type>
+        <type>Boolean</type>
         <format />
         <currency />
         <decimal>.</decimal>
@@ -999,13 +876,46 @@
       </field>
       <field>
         <name>p_day</name>
-        <type>Integer</type>
+        <type>Boolean</type>
         <format />
         <currency />
         <decimal>.</decimal>
         <group>,</group>
         <length>-1</length>
         <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>state_code</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>county_code</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>well_code</name>
+        <type>Integer</type>
+        <format>#</format>
+        <currency>EGP</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <length>15</length>
+        <precision>0</precision>
         <trim_type>none</trim_type>
       </field>
     </fields>
@@ -1017,8 +927,130 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
-      <yloc>112</yloc>
+      <xloc>96</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <field>
+        <name>latitude</name>
+        <rename>geo_lat</rename>
+      </field>
+      <field>
+        <name>longitude</name>
+        <rename>geo_long</rename>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sort rows</name>
+    <type>SortRows</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory />
+    <compress>N</compress>
+    <compress_variable />
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>geo_lat</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+      <field>
+        <name>geo_long</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Unique rows</name>
+    <type>Unique</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <count_rows>N</count_rows>
+    <count_field />
+    <reject_duplicate_row>N</reject_duplicate_row>
+    <error_description />
+    <fields>
+      <field>
+        <name>geo_lat</name>
+        <case_insensitive>N</case_insensitive>
+      </field>
+      <field>
+        <name>geo_long</name>
+        <case_insensitive>N</case_insensitive>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>544</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

@@ -376,8 +376,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
-      <yloc>400</yloc>
+      <xloc>768</xloc>
+      <yloc>512</yloc>
     </entry>
     <entry>
       <name>Transformation</name>
@@ -484,8 +484,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>240</xloc>
-      <yloc>272</yloc>
+      <xloc>112</xloc>
+      <yloc>400</yloc>
     </entry>
     <entry>
       <name>TR_DIM_STATE</name>
@@ -520,8 +520,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>368</xloc>
-      <yloc>272</yloc>
+      <xloc>112</xloc>
+      <yloc>512</yloc>
     </entry>
     <entry>
       <name>TR_DIM_GEO</name>
@@ -556,8 +556,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>272</yloc>
+      <xloc>240</xloc>
+      <yloc>512</yloc>
     </entry>
     <entry>
       <name>TR_DIM_DATE</name>
@@ -592,8 +592,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>96</xloc>
-      <yloc>400</yloc>
+      <xloc>352</xloc>
+      <yloc>512</yloc>
     </entry>
     <entry>
       <name>TR_DIM_OPERATOR</name>
@@ -628,8 +628,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>352</xloc>
-      <yloc>400</yloc>
+      <xloc>624</xloc>
+      <yloc>512</yloc>
     </entry>
     <entry>
       <name>TR_DIM_PARENT</name>
@@ -664,8 +664,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>224</xloc>
-      <yloc>400</yloc>
+      <xloc>480</xloc>
+      <yloc>512</yloc>
     </entry>
   </entries>
   <hops>
@@ -753,21 +753,22 @@
   </hops>
   <notepads>
     <notepad>
-      <note>WELLS_PREPERATION:
-Cleans wells dataset and then save it to clean_well.csv
+      <note>
+DATA PREPARATION AND DIMENSION
 
-PRODUCTION_PREPERATION:
-Cleans production dataset and then save it to clean_production.csv
+TR_DATA_PREPERATION
+Merge both production_mexico_all.json and wells_mexico_all.json using full outer join
+Outputs: production_merged.csv
 
-GENERIC DIMENSION TRANSFORMATION
-1. Pick data from clean_production.csv/clean_well.csv
+A DIMENSION TRANSFORMATION
+1. Pick data from production_merged.csv
 2. Select relevant columns
 3. create the dimension table in the database
 </note>
-      <xloc>640</xloc>
-      <yloc>144</yloc>
-      <width>417</width>
-      <heigth>186</heigth>
+      <xloc>256</xloc>
+      <yloc>224</yloc>
+      <width>521</width>
+      <heigth>202</heigth>
       <fontname>.SF NS Text</fontname>
       <fontsize>13</fontsize>
       <fontbold>N</fontbold>

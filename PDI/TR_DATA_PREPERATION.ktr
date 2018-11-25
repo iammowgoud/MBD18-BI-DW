@@ -436,11 +436,88 @@
   </info>
   <notepads>
     <notepad>
-      <note>Transformation disc</note>
-      <xloc>64</xloc>
-      <yloc>160</yloc>
-      <width>131</width>
-      <heigth>26</heigth>
+      <note>DATA PREPERATION
+
+For production_mexico_all.json,
+	1. Use regular expression to 
+		extract state code, county code, well's identifier from the 'api_number'
+	2. extract year, month, date of each production from the field 'month'
+		and store in the new fields, 'p_year', 'p_month', 'p_day',
+	3. sort the data with respect to the field 'api_number'
+For wells_mexico_all.json:
+	1. Use regular expression to 
+		extract state code, county code, well's identifier from the 'api_number'
+		and store in the new fields 'state_code', 'county_code', and 'well_code',
+	2. sort the data with respect to the field 'api_number'
+</note>
+      <xloc>448</xloc>
+      <yloc>32</yloc>
+      <width>492</width>
+      <heigth>234</heigth>
+      <fontname>.SF NS Text</fontname>
+      <fontsize>13</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note> OUTER MERGE
+
+1. Replace all numeric fields with NULL values to 0
+	(oil, gas, and water, latitude, longitude)
+2. Perform a JAVA Expression to pick the api_number, state_code, county_code,
+	and well_code form the merged output </note>
+      <xloc>288</xloc>
+      <yloc>496</yloc>
+      <width>491</width>
+      <heigth>106</heigth>
+      <fontname>.SF NS Text</fontname>
+      <fontsize>13</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>Pick API code
+
+Reasoning:
+
+The final result will have 3 types of records:
+1- Rows with well data (name, operator, parent, status, geo coordinates)
+	and no production data (month, year, day, oil, water, gas)
+	[state_code_w, county_code_w, well_code_w]
+
+2- Rows with both well data and production data for a specific date.
+	[state_code_w, county_code_w, well_code_p, state_code_p, county_code_p, well_code_p]
+
+3- Rows with production data
+	and no detailed well info (Only API number and derived codes)
+	[state_code_p, county_code_p, well_code_p]
+
+Each record will have state, couty, well codes from both Production and Wells dataset (Same)
+Here we are picking the NOT NULL codes coming from either to have only 3 fields instead of 6 </note>
+      <xloc>288</xloc>
+      <yloc>704</yloc>
+      <width>585</width>
+      <heigth>298</heigth>
       <fontname>.SF NS Text</fontname>
       <fontsize>13</fontsize>
       <fontbold>N</fontbold>
@@ -459,54 +536,64 @@
   </notepads>
   <order>
     <hop>
-      <from>wells_Input</from>
-      <to>extract codes from API</to>
+      <from>Convert null fields to zero</from>
+      <to>Split date field</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>extract codes from API</from>
-      <to>If field value is null</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>If field value is null</from>
-      <to>Sort wells</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>If field value is null 2</from>
-      <to>Calculator</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>production_Input</from>
-      <to>If field value is null 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Calculator</from>
+      <from>Split date field</from>
       <to>Sort prod</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Sort prod</from>
-      <to>Merge Join</to>
+      <to>Outer Join</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Sort wells</from>
-      <to>Merge Join</to>
+      <to>Outer Join</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Merge Join</from>
-      <to>Text file output</to>
+      <from>Production JSON Input</from>
+      <to>Extract codes from API - PROD</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Extract codes from API - PROD</from>
+      <to>Convert null fields to zero</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Wells JSON Input</from>
+      <to>Extract codes from API - WELLS</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Pick API codes</from>
+      <to>CSV output</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Extract codes from API - WELLS</from>
+      <to>Sort wells</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Outer Join</from>
+      <to>Convert numeric null fields to zero</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Convert numeric null fields to zero</from>
+      <to>Pick API codes</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Calculator</name>
-    <type>Calculator</type>
+    <name>CSV output</name>
+    <type>TextFileOutput</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -515,100 +602,240 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <calculation>
-      <field_name>p_year</field_name>
-      <calc_type>YEAR_OF_DATE</calc_type>
-      <field_a>month</field_a>
-      <field_b />
-      <field_c />
-      <value_type>None</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask />
-      <decimal_symbol />
-      <grouping_symbol />
-      <currency_symbol />
-    </calculation>
-    <calculation>
-      <field_name>p_month</field_name>
-      <calc_type>MONTH_OF_DATE</calc_type>
-      <field_a>month</field_a>
-      <field_b />
-      <field_c />
-      <value_type>None</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask />
-      <decimal_symbol />
-      <grouping_symbol />
-      <currency_symbol />
-    </calculation>
-    <calculation>
-      <field_name>p_day</field_name>
-      <calc_type>DAY_OF_MONTH</calc_type>
-      <field_a>month</field_a>
-      <field_b />
-      <field_c />
-      <value_type>None</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask />
-      <decimal_symbol />
-      <grouping_symbol />
-      <currency_symbol />
-    </calculation>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>400</xloc>
-      <yloc>256</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>If field value is null</name>
-    <type>IfNull</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <replaceAllByValue>0</replaceAllByValue>
-    <replaceAllMask />
-    <selectFields>Y</selectFields>
-    <selectValuesType>N</selectValuesType>
-    <setEmptyStringAll>N</setEmptyStringAll>
-    <valuetypes>
-      </valuetypes>
+    <separator>;</separator>
+    <enclosure>"</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding />
+    <endedLine />
+    <fileNameInField>N</fileNameInField>
+    <fileNameField />
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>${Internal.Entry.Current.Directory}/output/merged_production</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>csv</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format />
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
     <fields>
       <field>
+        <name>api_no</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>operator_name</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>well_name</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
         <name>latitude</name>
-        <value>0</value>
-        <mask />
-        <set_empty_string>N</set_empty_string>
+        <type>Number</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
         <name>longitude</name>
-        <value>0</value>
-        <mask />
-        <set_empty_string>N</set_empty_string>
+        <type>Number</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>status</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>parent</name>
+        <type>String</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
       </field>
       <field>
         <name>cik</name>
-        <value>0</value>
-        <mask />
-        <set_empty_string>N</set_empty_string>
+        <type>Number</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>oil</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>gas</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>water</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>p_year</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>p_month</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>p_day</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>state_code</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>county_code</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>well_code</name>
+        <type>Integer</type>
+        <format />
+        <currency />
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif />
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>0</precision>
       </field>
     </fields>
     <cluster_schema />
@@ -619,13 +846,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>400</xloc>
-      <yloc>384</yloc>
+      <xloc>208</xloc>
+      <yloc>1056</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>If field value is null 2</name>
+    <name>Convert null fields to zero</name>
     <type>IfNull</type>
     <description />
     <distribute>Y</distribute>
@@ -670,13 +897,220 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
-      <yloc>256</yloc>
+      <xloc>320</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Merge Join</name>
+    <name>Convert numeric null fields to zero</name>
+    <type>IfNull</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <replaceAllByValue>0</replaceAllByValue>
+    <replaceAllMask />
+    <selectFields>Y</selectFields>
+    <selectValuesType>N</selectValuesType>
+    <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>latitude</name>
+        <value>0</value>
+        <mask />
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>longitude</name>
+        <value>0</value>
+        <mask />
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>cik</name>
+        <value>0</value>
+        <mask />
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>592</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Extract codes from API - PROD</name>
+    <type>RegexEval</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <script>(\d{2})(\d{3})(\d{5}) #state_code, county_code, well_code</script>
+    <matcher>api_number</matcher>
+    <resultfieldname />
+    <usevar>N</usevar>
+    <allowcapturegroups>Y</allowcapturegroups>
+    <replacefields>N</replacefields>
+    <canoneq>N</canoneq>
+    <caseinsensitive>N</caseinsensitive>
+    <comment>Y</comment>
+    <dotall>N</dotall>
+    <multiline>N</multiline>
+    <unicode>N</unicode>
+    <unix>N</unix>
+    <fields>
+      <field>
+        <name>state_code_p</name>
+        <type>Integer</type>
+        <format />
+        <group />
+        <decimal />
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif />
+        <ifnull />
+        <trimtype>none</trimtype>
+        <currency />
+      </field>
+      <field>
+        <name>county_code_p</name>
+        <type>Integer</type>
+        <format />
+        <group />
+        <decimal />
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif />
+        <ifnull />
+        <trimtype>none</trimtype>
+        <currency />
+      </field>
+      <field>
+        <name>well_code_p</name>
+        <type>Integer</type>
+        <format />
+        <group />
+        <decimal />
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif />
+        <ifnull />
+        <trimtype>none</trimtype>
+        <currency />
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Extract codes from API - WELLS</name>
+    <type>RegexEval</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <script>(\d{2})(\d{3})(\d{5}) #state_code, county_code, well_code</script>
+    <matcher>api_number</matcher>
+    <resultfieldname />
+    <usevar>N</usevar>
+    <allowcapturegroups>Y</allowcapturegroups>
+    <replacefields>N</replacefields>
+    <canoneq>N</canoneq>
+    <caseinsensitive>N</caseinsensitive>
+    <comment>Y</comment>
+    <dotall>N</dotall>
+    <multiline>N</multiline>
+    <unicode>N</unicode>
+    <unix>N</unix>
+    <fields>
+      <field>
+        <name>state_code_w</name>
+        <type>Integer</type>
+        <format />
+        <group />
+        <decimal />
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif />
+        <ifnull />
+        <trimtype>none</trimtype>
+        <currency />
+      </field>
+      <field>
+        <name>county_code_w</name>
+        <type>Integer</type>
+        <format />
+        <group />
+        <decimal />
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif />
+        <ifnull />
+        <trimtype>none</trimtype>
+        <currency />
+      </field>
+      <field>
+        <name>well_code_w</name>
+        <type>Integer</type>
+        <format />
+        <group />
+        <decimal />
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif />
+        <ifnull />
+        <trimtype>none</trimtype>
+        <currency />
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>112</xloc>
+      <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Outer Join</name>
     <type>MergeJoin</type>
     <description />
     <distribute>Y</distribute>
@@ -703,14 +1137,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>688</xloc>
-      <yloc>320</yloc>
+      <xloc>208</xloc>
+      <yloc>496</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Sort prod</name>
-    <type>SortRows</type>
+    <name>Pick API codes</name>
+    <type>Janino</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -719,23 +1153,38 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>out</prefix>
-    <sort_size>1000000</sort_size>
-    <free_memory />
-    <compress>N</compress>
-    <compress_variable />
-    <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>api_number</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
+    <formula>
+      <field_name>state_code</field_name>
+      <formula_string>state_code_w == null ? state_code_p : state_code_w</formula_string>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <replace_field />
+    </formula>
+    <formula>
+      <field_name>county_code</field_name>
+      <formula_string>county_code_w == null ? county_code_p : county_code_w</formula_string>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <replace_field />
+    </formula>
+    <formula>
+      <field_name>well_code</field_name>
+      <formula_string>well_code_w == null ? well_code_p : well_code_w</formula_string>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <replace_field />
+    </formula>
+    <formula>
+      <field_name>api_no</field_name>
+      <formula_string>api_number == null ? api_number_1 : api_number</formula_string>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <replace_field />
+    </formula>
     <cluster_schema />
     <remotesteps>
       <input>
@@ -744,188 +1193,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
-      <yloc>256</yloc>
+      <xloc>208</xloc>
+      <yloc>704</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Sort wells</name>
-    <type>SortRows</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>out</prefix>
-    <sort_size>1000000</sort_size>
-    <free_memory />
-    <compress>N</compress>
-    <compress_variable />
-    <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>api_number</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>576</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Text file output</name>
-    <type>TextFileOutput</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <separator>;</separator>
-    <enclosure>"</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>Y</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>None</compression>
-    <encoding />
-    <endedLine />
-    <fileNameInField>N</fileNameInField>
-    <fileNameField />
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>${Internal.Entry.Current.Directory}/output/merged_production</name>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>csv</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format />
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
-    <fields>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>784</xloc>
-      <yloc>320</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>extract codes from API</name>
-    <type>RegexEval</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <script>(\d{2})(\d{3})(\d{5}) #state_code, county_code, well_code</script>
-    <matcher>api_number</matcher>
-    <resultfieldname />
-    <usevar>N</usevar>
-    <allowcapturegroups>Y</allowcapturegroups>
-    <replacefields>N</replacefields>
-    <canoneq>N</canoneq>
-    <caseinsensitive>N</caseinsensitive>
-    <comment>Y</comment>
-    <dotall>N</dotall>
-    <multiline>N</multiline>
-    <unicode>N</unicode>
-    <unix>N</unix>
-    <fields>
-      <field>
-        <name>state_code</name>
-        <type>String</type>
-        <format />
-        <group />
-        <decimal />
-        <length>2</length>
-        <precision>-1</precision>
-        <nullif />
-        <ifnull />
-        <trimtype>both</trimtype>
-        <currency />
-      </field>
-      <field>
-        <name>county_code</name>
-        <type>String</type>
-        <format />
-        <group />
-        <decimal />
-        <length>3</length>
-        <precision>-1</precision>
-        <nullif />
-        <ifnull />
-        <trimtype>both</trimtype>
-        <currency />
-      </field>
-      <field>
-        <name>well_code</name>
-        <type>String</type>
-        <format />
-        <group />
-        <decimal />
-        <length>5</length>
-        <precision>-1</precision>
-        <nullif />
-        <ifnull />
-        <trimtype>both</trimtype>
-        <currency />
-      </field>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>256</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>production_Input</name>
+    <name>Production JSON Input</name>
     <type>JsonInput</type>
     <description />
     <distribute>Y</distribute>
@@ -1040,13 +1314,164 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>64</xloc>
-      <yloc>256</yloc>
+      <xloc>320</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>wells_Input</name>
+    <name>Sort prod</name>
+    <type>SortRows</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory />
+    <compress>N</compress>
+    <compress_variable />
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>api_number</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>416</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sort wells</name>
+    <type>SortRows</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory />
+    <compress>N</compress>
+    <compress_variable />
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>api_number</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>112</xloc>
+      <yloc>400</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Split date field</name>
+    <type>Calculator</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <calculation>
+      <field_name>p_year</field_name>
+      <calc_type>YEAR_OF_DATE</calc_type>
+      <field_a>month</field_a>
+      <field_b />
+      <field_c />
+      <value_type>None</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
+    </calculation>
+    <calculation>
+      <field_name>p_month</field_name>
+      <calc_type>MONTH_OF_DATE</calc_type>
+      <field_a>month</field_a>
+      <field_b />
+      <field_c />
+      <value_type>None</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
+    </calculation>
+    <calculation>
+      <field_name>p_day</field_name>
+      <calc_type>DAY_OF_MONTH</calc_type>
+      <field_a>month</field_a>
+      <field_b />
+      <field_c />
+      <value_type>None</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
+    </calculation>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Wells JSON Input</name>
     <type>JsonInput</type>
     <description />
     <distribute>Y</distribute>
@@ -1200,8 +1625,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>64</xloc>
-      <yloc>368</yloc>
+      <xloc>112</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
