@@ -586,7 +586,7 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <filename>/Users/tommy/git/IE/BI_DW/my_repo/group_proj/PDI/output/merged_production.csv</filename>
+    <filename>${Internal.Entry.Current.Directory}/output/merged_production_cont.csv</filename>
     <filename_field />
     <rownum_field />
     <include_filename>N</include_filename>
